@@ -116,3 +116,42 @@ public class TValueCalculator {
     }
 }
 
+
+
+
+
+public String userIdGeneration(String firstName, String lastName, int pin, int n) {
+    if (firstName == null || lastName == null || firstName.isEmpty() || lastName.isEmpty()) {
+        throw new IllegalArgumentException("Names cannot be null or empty");
+    }
+
+    String smallerName, longerName;
+
+    // Determine smaller and longer names
+    if (firstName.length() != lastName.length()) {
+        smallerName = firstName.length() < lastName.length() ? firstName : lastName;
+        longerName = firstName.length() < lastName.length() ? lastName : firstName;
+    } else {
+        smallerName = firstName.compareToIgnoreCase(lastName) < 0 ? firstName : lastName;
+        longerName = firstName.compareToIgnoreCase(lastName) < 0 ? lastName : firstName;
+    }
+
+    // Handle potential out-of-bounds for pin extraction
+    int pinDigits = String.valueOf(pin).length();
+    if (n > pinDigits) {
+        throw new IllegalArgumentException("n cannot be greater than the number of digits in pin");
+    }
+
+    // Generate base user ID
+    String baseUserId = smallerName.charAt(0) + longerName +
+                       Integer.toString(pin / (int) Math.pow(10, pinDigits - n)) +
+                       Integer.toString(pin % (int) Math.pow(10, n));
+
+    // Toggle case efficiently using toCharArray and XOR
+    char[] charArray = baseUserId.toCharArray();
+    for (int i = 0; i < charArray.length; i++) {
+        charArray[i] ^= 32; // Toggle case efficiently
+    }
+    return new String(charArray);
+}
+
