@@ -42,3 +42,77 @@ Key points:
  * It uses clear variable names and comments to enhance readability.
  * The code is concise and avoids unnecessary complexity.
 This implementation effectively addresses the given problem and provides a clear and efficient solution.
+
+
+
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TValueCalculator {
+
+    public int findTValue(int input1, int input2, int input3) {
+        int t = 0;
+
+        // Check if input2 is prime
+        boolean isPrime = isPrime(input2);
+
+        // Calculate t based on input2 and its primality
+        if (isPrime) {
+            if (input2 % 2 == 0) { // Even prime
+                t = input1 * input1 * sumOfFirstNPrimes(input2);
+            } else { // Odd prime
+                t = input2 * input2 * sumOfFirstNPrimes(input2 + input3);
+            }
+        } else {
+            if (input2 % 2 == 0) { // Even composite
+                t = input3 * input3 * sumOfFirstNPrimes(input2 + input3);
+            } else { // Odd composite
+                t = sumOfFirstNPrimes(input1 + input2 + input3);
+            }
+        }
+
+        // Check if t is prime
+        if (isPrime(t)) {
+            return t + input3;
+        } else {
+            return t - input3;
+        }
+    }
+
+    private boolean isPrime(int num) {
+        if (num <= 1) {
+            return false;
+        }
+        if (num <= 3) {
+            return true;
+        }
+        if (num % 2 == 0 || num % 3 == 0) {
+            return false;
+        }
+
+        for (int i = 5; i * i <= num; i += 6) {
+            if (num % i == 0 || num % (i + 2) == 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private int sumOfFirstNPrimes(int n) {
+        int count = 0, num = 2, sum = 0;
+
+        while (count < n) {
+            if (isPrime(num)) {
+                sum += num;
+                count++;
+            }
+            num++;
+        }
+
+        return sum;
+    }
+}
+
