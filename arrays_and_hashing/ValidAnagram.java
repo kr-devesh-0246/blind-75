@@ -79,3 +79,63 @@ public class Solution {
         System.out.println(GetAnswer(6, Arrays.asList(2, 3, 1, 5, 6, 4))); // Expected: 9
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import java.util.*;
+
+class Solution {
+    private static final int MOD = 1000000007;
+
+    public static int GetAnswer(int N, List<Integer> A) {
+        int overallGCD = A.get(0);
+        for (int i = 1; i < N; i++) {
+            overallGCD = gcd(overallGCD, A.get(i));
+        }
+
+        Map<Integer, Integer> factorCount = new HashMap<>();
+        for (int num : A) {
+            int reducedNum = num / overallGCD;
+            for (int i = 2; i * i <= reducedNum; i++) {
+                while (reducedNum % i == 0) {
+                    factorCount.put(i, factorCount.getOrDefault(i, 0) + 1);
+                    reducedNum /= i;
+                }
+            }
+            if (reducedNum > 1) {
+                factorCount.put(reducedNum, factorCount.getOrDefault(reducedNum, 0) + 1);
+            }
+        }
+
+        long result = 1;
+        for (int count : factorCount.values()) {
+            result = (result * (count + 2)) % MOD;
+        }
+
+        return (int) ((result - 1 + MOD) % MOD);
+    }
+
+    private static int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
