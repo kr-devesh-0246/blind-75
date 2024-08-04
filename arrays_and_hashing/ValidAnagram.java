@@ -139,3 +139,83 @@ class Solution {
         }
         return a;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    import java.util.*;
+
+public class Solution {
+    public static int GetAnswer(int N, List<Integer> P) {
+        final int MOD = 1000000007;
+        
+        // Create an array to track visited nodes
+        boolean[] visited = new boolean[N + 1];
+        List<List<Integer>> cycles = new ArrayList<>();
+        
+        // Find cycles in the permutation
+        for (int i = 1; i <= N; i++) {
+            if (!visited[i]) {
+                List<Integer> cycle = new ArrayList<>();
+                int current = i;
+                
+                // Traverse the cycle
+                while (!visited[current]) {
+                    visited[current] = true;
+                    cycle.add(current);
+                    current = P.get(current - 1); // Move to the next node
+                }
+                cycles.add(cycle);
+            }
+        }
+
+        // Calculate the number of pairs
+        int totalPairs = 0;
+        int cycleSize = 0;
+        
+        // Count the sizes of the cycles
+        for (List<Integer> cycle : cycles) {
+            cycleSize += cycle.size();
+        }
+        
+        // Calculate the total number of pairs
+        for (List<Integer> cycle : cycles) {
+            int size = cycle.size();
+            totalPairs = (totalPairs + size * (cycleSize - size)) % MOD;
+        }
+
+        return totalPairs;
+    }
+
+    public static void main(String[] args) {
+        // Sample Test Case 1
+        int N1 = 3;
+        List<Integer> P1 = Arrays.asList(1, 2, 3);
+        System.out.println(GetAnswer(N1, P1)); // Output: 3
+
+        // Sample Test Case 2
+        int N2 = 6;
+        List<Integer> P2 = Arrays.asList(2, 3, 1, 5, 6, 4);
+        System.out.println(GetAnswer(N2, P2)); // Output: 9
+    }
+}
+
