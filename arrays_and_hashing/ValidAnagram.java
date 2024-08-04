@@ -219,3 +219,81 @@ public class Solution {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public static int get_ans(int N, int A, int B, List<Integer> P, int Q, int Col, List<List<Integer>> Queries) {
+    int[] subtree_size = new int[N + 1];
+    int[] beauty = new int[N + 1];
+    int[] K = new int[Q];
+    int mod = 1000000007;
+    
+    // Compute subtree sizes
+    for (int i = 1; i <= N; i++) {
+        dfs(i, P, subtree_size);
+    }
+    
+    // Compute beauty for each query
+    for (int q = 0; q < Q; q++) {
+        int U = Queries.get(q).get(0);
+        int V = Queries.get(q).get(1);
+        int beauty_UV = compute_beauty(U, V, A, B, subtree_size, P);
+        K[q] = beauty_UV;
+        
+        // Update U and V for next query
+        U = (U + beauty_UV) % N + 1;
+        V = (V + beauty_UV) % N + 1;
+        Queries.get(q).set(0, U);
+        Queries.get(q).set(1, V);
+    }
+    
+    // Compute total beauty
+    int total_beauty = 0;
+    for (int q = 0; q < Q; q++) {
+        total_beauty = (total_beauty + K[q]) % mod;
+    }
+    
+    return total_beauty;
+}
+
+private static int dfs(int node, List<Integer> P, int[] subtree_size) {
+    subtree_size[node] = 1;
+    for (int child = 1; child <= P.size(); child++) {
+        if (P.get(child - 1) == node) {
+            subtree_size[node] += dfs(child, P, subtree_size);
+        }
+    }
+    return subtree_size[node];
+}
+
+private static int compute_beauty(int U, int V, int A, int B, int[] subtree_size, List<Integer> P) {
+    int beauty_UV = 0;
+    int node = U;
+    while (node != A) {
+        beauty_UV += subtree_size[node];
+        node = P.get(node - 1);
+    }
+    beauty_UV += subtree_size[A];
+    
+    node = V;
+    while (node != B) {
+        beauty_UV += subtree_size[node];
+        node = P.get(node - 1);
+    }
+    beauty_UV += subtree_size[B];
+    
+    return beauty_UV;
+}
